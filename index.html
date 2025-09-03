@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Story & Image Generator</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin: 50px; }
+        #output { margin-top: 20px; }
+        #generatedImage { max-width: 100%; height: auto; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Generate an Image from a Story</h1>
+    <input type="text" id="promptInput" placeholder="Enter a prompt..." style="width: 300px;">
+    <button id="generateBtn">Generate!</button>
+    <div id="output">
+        <h2>Generated Story:</h2>
+        <p id="storyOutput"></p>
+        <h2>Best Image:</h2>
+        <img id="generatedImage" src="" alt="Generated image will appear here">
+    </div>
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const prompt = document.getElementById('promptInput').value;
+            if (!prompt) {
+                alert('Please enter a prompt!');
+                return;
+            }
+            
+            // Replace this URL with your deployed API endpoint from Hugging Face Spaces
+            const API_ENDPOINT = "https://YOUR-HUGGING-FACE-SPACE-URL/generate_and_score";
+
+            document.getElementById('storyOutput').textContent = "Generating story...";
+            document.getElementById('generatedImage').src = "";
+            document.getElementById('generatedImage').alt = "Generating image...";
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('storyOutput').textContent = data.story;
+                    document.getElementById('generatedImage').src = `data:image/png;base64,${data.image}`;
+                    document.getElementById('generatedImage').alt = "Generated image";
+                } else {
+                    alert(`Error: ${data.detail}`);
+                }
+            } catch (error) {
+                alert(`An error occurred: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
