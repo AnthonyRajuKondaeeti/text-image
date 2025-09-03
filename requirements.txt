@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+mistralai
+diffusers
+transformers
+accelerate
+bitsandbytes
+Pillow
+torch
+safetensors
